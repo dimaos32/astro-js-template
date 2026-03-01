@@ -1,0 +1,25 @@
+---
+import { getClassMods } from '@/helpers';
+
+const { mods, className, name } = Astro.props;
+const classMods = getClassMods('modal', mods);
+---
+
+<div
+  class:list={['modal', 'modal--preload', classMods, className]}
+  data-modal=`${name}`
+>
+  <div class="modal__wrapper">
+    <div class="modal__overlay" data-close-modal></div>
+    <div class="modal__content">
+      <slot />
+      <button
+        class="modal__close-btn"
+        type="button"
+        aria-label="Закрыть попап"
+        data-close-modal
+      >
+      </button>
+    </div>
+  </div>
+</div>

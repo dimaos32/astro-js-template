@@ -1,0 +1,16 @@
+---
+import RootLayout from '@/layouts/Root.astro';
+import Header from '@/modules/Header/Header.astro';
+import Footer from '@/modules/Footer/Footer.astro';
+
+const { title } = Astro.props;
+---
+
+<RootLayout title={title}>
+  <Header />
+  <main>
+    <slot />
+  </main>
+  <Footer />
+  <slot name="modals" />
+</RootLayout>

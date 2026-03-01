@@ -1,14 +1,52 @@
 {
   "name": "astro-js-template",
   "type": "module",
+  "description": "Шаблон для верстки на Astro с SCSS",
   "version": "0.0.1",
+  "browserslist": [
+    "last 6 versions",
+    "not dead",
+    "not op_mini all",
+    "Safari >= 15.4",
+    "Firefox ESR"
+  ],
   "scripts": {
+    "generate-sprite": "node utils/generate-sprite.mjs",
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "npm run generate-sprite && npm run lint && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "lint:js": "eslint . --ext .js,.astro",
+    "lint:css": "stylelint 'src/**/*.scss'",
+    "lint": "npm run lint:js && npm run lint:css",
+    "images": "node ./utils/images-optimize.mjs"
   },
   "dependencies": {
-    "astro": "^5.17.1"
+    "-": "^0.0.1",
+    "@csstools/normalize.css": "^12.1.1",
+    "astro": "^5.17.1",
+    "chalk": "^5.6.2",
+    "scroll-lock": "^2.1.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@moritzloewenstein/vite-plugin-sass-glob-import": "^6.0.3",
+    "autoprefixer": "^10.4.27",
+    "eslint": "^10.0.2",
+    "eslint-plugin-astro": "^1.6.0",
+    "globals": "^17.3.0",
+    "inquirer": "^13.3.0",
+    "postcss": "^8.5.6",
+    "postcss-combine-media-query": "^2.1.0",
+    "postcss-preset-env": "^11.2.0",
+    "postcss-pxtorem": "^6.1.0",
+    "postcss-sort-media-queries": "^5.2.0",
+    "prettier": "^3.8.1",
+    "prettier-plugin-astro": "^0.14.1",
+    "sass": "^1.97.3",
+    "sharp": "^0.34.5",
+    "stylelint": "^17.4.0",
+    "stylelint-config-standard-scss": "^17.0.0",
+    "stylelint-scss": "^7.0.0",
+    "svgo": "^4.0.0"
   }
 }

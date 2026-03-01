@@ -1,0 +1,21 @@
+---
+import MainLayout from '@/layouts/Main.astro';
+import Container from '@/components/Container/Container.astro';
+import Title from '@/ui/Title/Title.astro';
+import { PAGES } from '@/const/';
+---
+
+<MainLayout title="Список страниц">
+  <Container>
+    <Title as="h1">Список страниц</Title>
+    <ol>
+      {
+        PAGES.map((item) => (
+          <li>
+            <a href={item.href}>{`${item.label} — ${item.href}`}</a>
+          </li>
+        ))
+      }
+    </ol>
+  </Container>
+</MainLayout>

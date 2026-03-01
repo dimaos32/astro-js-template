@@ -1,0 +1,23 @@
+---
+import { getClassMods } from '@/helpers';
+
+const { as = 'h2', className, text, mods, size, ...props } = Astro.props;
+const classMods = getClassMods('title', mods);
+
+const Tag =
+  as === 'h1' ||
+  as === 'h2' ||
+  as === 'h3' ||
+  as === 'h4' ||
+  as === 'h5' ||
+  as === 'h6'
+    ? as
+    : 'h2';
+const computedSize = size === Tag ? null : size;
+---
+
+<Fragment>
+  <Tag class:list={['title', computedSize, classMods, className]} {...props}>
+    <slot />
+  </Tag>
+</Fragment>

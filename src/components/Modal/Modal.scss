@@ -1,0 +1,133 @@
+@use "@styles/mixins";
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  transform: scale(1.1);
+  visibility: hidden;
+  opacity: 0;
+
+  transition:
+    opacity var(--transition-modal),
+    transform var(--transition-modal),
+    visibility var(--transition-modal);
+
+  pointer-events: none;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &__wrapper {
+    transform: translateZ(0);
+    background-color: var(--color-overlay);
+    position: relative;
+
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    inline-size: 100%;
+    min-block-size: 100%;
+    padding: 60px 40px;
+  }
+
+  &__overlay {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+
+    inline-size: 100%;
+    block-size: 100%;
+
+    cursor: pointer;
+  }
+
+  &__content {
+    position: relative;
+
+    inline-size: 600px;
+    padding: 40px;
+
+    border-radius: 20px;
+    background-color: var(--color-white);
+  }
+
+  &__close-btn {
+    position: absolute;
+    inset-block-start: 10px;
+    inset-inline-end: 10px;
+
+    inline-size: 40px;
+    block-size: 40px;
+
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    border-radius: 50%;
+
+    &::before,
+    &::after {
+      position: absolute;
+      content: "";
+      inset-block-start: 50%;
+      inset-inline-start: 50%;
+
+      width: 32px;
+      height: 4px;
+
+      background-color: var(--color-fedora);
+      border-radius: 5px;
+
+      transition:
+        background-color var(--transition-modal),
+        transform var(--transition-modal);
+    }
+
+    &::before {
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    &::after {
+      transform: translate(-50%, -50%) rotate(135deg);
+    }
+
+    @include mixins.hover-focus {
+      &::before,
+      &::after {
+        background-color: var(--color-east-side);
+      }
+    }
+  }
+
+  &--preload {
+    transition: none;
+  }
+
+  &.is-active {
+    transform: scale(1);
+    visibility: visible;
+    opacity: 1;
+    transition:
+      opacity 0.6s var(--transition-modal),
+      transform 0.6s var(--transition-modal);
+
+    pointer-events: auto;
+  }
+
+  iframe {
+    max-inline-size: 100%;
+    border: none;
+  }
+}

@@ -1,0 +1,34 @@
+---
+import { getClassMods } from '@/helpers';
+import Icon from '../Icon/Icon.astro';
+
+const {
+  as: Tag = 'button',
+  className,
+  text,
+  mods,
+  size,
+  icon,
+  iconEnd,
+  modal,
+  ...props
+} = Astro.props;
+const classMods = getClassMods('button', mods);
+---
+
+<Fragment>
+  <Tag
+    class:list={[
+      'button',
+      size ? `button--${size}` : null,
+      classMods,
+      className,
+    ].filter(Boolean)}
+    data-open-modal={modal}
+    {...props}
+  >
+    {icon && !iconEnd && <Icon class="button__icon" name={icon} size={20} />}
+    {text}
+    {icon && iconEnd && <Icon class="button__icon" name={icon} size={20} />}
+  </Tag>
+</Fragment>

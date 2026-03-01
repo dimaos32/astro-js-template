@@ -1,0 +1,53 @@
+@use "@styles/mixins";
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding-block: 12px;
+  padding-inline: 18px;
+  width: fit-content;
+
+  font-size: 18px;
+  color: var(--color-fedora);
+  font-family: inherit;
+
+  border: 2px solid var(--color-fedora);
+  border-radius: 12px;
+  background-color: var(--color-lavender);
+  cursor: pointer;
+  transition:
+    color var(--transition-default),
+    background-color var(--transition-default);
+
+  @include mixins.hover-focus {
+    color: var(--color-east-side);
+
+    border-color: var(--color-east-side);
+  }
+
+  &__icon {
+    width: 24px;
+    height: 24px;
+
+    svg {
+      width: 100%;
+      height: 100%;
+      color: var(--color-fedora);
+    }
+  }
+
+  &--fill {
+    border-color: var(--color-white);
+    background-color: var(--color-fedora);
+
+    .button__text {
+      color: var(--color-white);
+    }
+
+    @include mixins.hover-focus {
+      background-color: var(--color-east-side);
+    }
+  }
+}

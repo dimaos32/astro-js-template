@@ -1,0 +1,17 @@
+---
+const DEFAULT_ICON_SIZE = 32;
+
+const {
+  name,
+  width,
+  height,
+  size = DEFAULT_ICON_SIZE,
+  className = '',
+} = Astro.props;
+const actualWidth = width ?? size;
+const actualHeight = height ?? size;
+---
+
+<svg width={actualWidth} height={actualHeight} class={className}>
+  <use href={`/svg/sprite.svg#${name}`}></use>
+</svg>

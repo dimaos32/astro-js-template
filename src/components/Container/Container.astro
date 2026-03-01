@@ -1,0 +1,10 @@
+---
+import { getClassMods } from '@/helpers';
+
+const { mods, className } = Astro.props;
+const classMods = getClassMods('container', mods);
+---
+
+<div class:list={['container', classMods, className]}>
+  <slot />
+</div>

@@ -1,9 +1,7 @@
 import { defineConfig } from 'astro/config';
 import viteSassGlob from '@moritzloewenstein/vite-plugin-sass-glob-import';
 import { viteTouchGlobalScss } from './plugins/vite-touch-global-scss';
-import { exec } from 'node:child_process';
-import chalk from 'chalk';
-import { normalize } from 'node:path';
+import { viteSvgSpriteWatcher } from './plugins/vite-svg-sprite-watcher';
 
 export default defineConfig({
   devToolbar: { enabled: false },
@@ -62,63 +60,10 @@ export default defineConfig({
         watchedPaths: ['/src/ui/', '/src/components/', '/src/modules/'],
         globalScssPath: '/src/styles/index.scss',
       }),
-      {
-        name: 'svg-sprite-watcher',
-        configureServer(server) {
-          let isBuilding = false;
-          const iconsPath = normalize('/src/raw/icons/');
-
-          const rebuildSprite = (filePath) => {
-            if (
-              !normalize(filePath).includes(iconsPath) ||
-              !filePath.endsWith('.svg')
-            ) {
-              return;
-            }
-
-            if (isBuilding) return;
-            isBuilding = true;
-
-            const timestamp = chalk.gray(new Date().toLocaleTimeString());
-            // eslint-disable-next-line no-console
-            console.log(
-              `${timestamp} ${chalk.blue('🔄 SVG changed, rebuilding sprite...')}`
-            );
-
-            exec('node utils/generate-sprite.mjs', (error) => {
-              isBuilding = false;
-              if (error) {
-                // eslint-disable-next-line no-console
-                console.error(
-                  `${timestamp} ${chalk.red('❌ Error:')} ${error.message}`
-                );
-              } else {
-                // eslint-disable-next-line no-console
-                console.log(
-                  `${timestamp} ${chalk.green('✓ Sprite updated successfully')}`
-                );
-              }
-            });
-          };
-          server.httpServer?.once('listening', () => {
-            const timestamp = chalk.gray(new Date().toLocaleTimeString());
-            // eslint-disable-next-line no-console
-            console.log(
-              `${timestamp} ${chalk.blue('🔨 Initial sprite build...')}`
-            );
-            exec('node utils/generate-sprite.mjs', (error) => {
-              if (!error) {
-                // eslint-disable-next-line no-console
-                console.log(`${timestamp} ${chalk.green('✓ Sprite ready')}`);
-              }
-            });
-          });
-          server.watcher
-            .on('add', rebuildSprite)
-            .on('change', rebuildSprite)
-            .on('unlink', rebuildSprite);
-        },
-      },
+      viteSvgSpriteWatcher({
+        iconsPath: '/src/raw/icons/',
+        spriteScript: 'node utils/generate-sprite.mjs',
+      }),
     ],
   },
 });

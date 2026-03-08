@@ -15,8 +15,11 @@ export default defineConfig({
     assetsPrefix: '.',
   },
   server: {
-    open: './sitemap.html',
+    open: 'sitemap.html',
     host: true,
+    watch: {
+      usePolling: true,
+    },
   },
   vite: {
     css: {
@@ -98,7 +101,7 @@ export default defineConfig({
             console.log(
               `${timestamp} ${chalk.blue('🔨 Initial sprite build...')}`
             );
-            exec('node util/generate-sprite.mjs', (error) => {
+            exec('node utils/generate-sprite.mjs', (error) => {
               if (!error) {
                 // eslint-disable-next-line no-console
                 console.log(`${timestamp} ${chalk.green('✓ Sprite ready')}`);
@@ -112,10 +115,5 @@ export default defineConfig({
         },
       },
     ],
-    server: {
-      watch: {
-        usePolling: true,
-      },
-    },
   },
 });

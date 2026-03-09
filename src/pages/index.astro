@@ -1,8 +1,8 @@
 ---
-import MainLayout from '@/layouts/Main.astro';
-import Example from '@/modules/Example/Example.astro';
-import Modal from '@/components/Modal/Modal.astro';
-import Title from '@/ui/Title/Title.astro';
+import MainLayout from '@/layouts/Main';
+import Example from '@modules/Example';
+import Modal from '@components/Modal';
+import UiTitle from '@ui/UiTitle';
 ---
 
 <MainLayout title="Главная">
@@ -10,7 +10,7 @@ import Title from '@/ui/Title/Title.astro';
 
   <Fragment slot="modals">
     <Modal name="example">
-      <Title>Пример модалки.</Title>
+      <UiTitle>Пример модалки.</UiTitle>
     </Modal>
   </Fragment>
 </MainLayout>

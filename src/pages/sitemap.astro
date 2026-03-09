@@ -1,13 +1,13 @@
 ---
-import MainLayout from '@/layouts/Main.astro';
-import Container from '@/components/Container/Container.astro';
-import Title from '@/ui/Title/Title.astro';
+import MainLayout from '@/layouts/Main';
+import Container from '@components/Container';
+import UiTitle from '@ui/UiTitle';
 import { PAGES } from '@/const/';
 ---
 
 <MainLayout title="Список страниц">
   <Container>
-    <Title as="h1">Список страниц</Title>
+    <UiTitle as="h1">Список страниц</UiTitle>
     <ol>
       {
         PAGES.map((item) => (

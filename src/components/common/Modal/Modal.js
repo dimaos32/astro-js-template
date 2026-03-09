@@ -1,6 +1,8 @@
 import { lockFocus, unlockFocus } from '@/helpers';
 import { modalSettings } from '@/settings';
-import { enablePageScroll, disablePageScroll } from 'scroll-lock';
+import scrollLock from 'scroll-lock';
+
+const { enablePageScroll, disablePageScroll } = scrollLock;
 
 let currentSettings = {};
 let currentModalName = null;

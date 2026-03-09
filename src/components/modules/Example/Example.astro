@@ -1,12 +1,12 @@
 ---
-import Container from '@/components/Container/Container.astro';
-import Title from '@/ui/Title/Title.astro';
-import Button from '@/ui/Button/Button.astro';
+import Container from '@components/Container';
+import UiTitle from '@ui/UiTitle';
+import UiButton from '@ui/UiButton';
 ---
 
 <section class="example">
   <Container>
-    <Title as="h1">Главная страница.</Title>
+    <UiTitle as="h1">Главная страница.</UiTitle>
     <img
       class="example__cover"
       src="/images/mountain.jpg"
@@ -14,7 +14,7 @@ import Button from '@/ui/Button/Button.astro';
       height="640"
       alt="Белая гора"
     />
-    <Button
+    <UiButton
       className="example__btn"
       text="Стандартная модалка"
       icon="icon-shipping-box"

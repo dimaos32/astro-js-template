@@ -1,6 +1,6 @@
 ---
 import { getClassMods } from '@/helpers';
-import Icon from '../Icon/Icon.astro';
+import UiIcon from '@ui/UiIcon';
 
 const {
   as: Tag = 'button',
@@ -27,8 +27,8 @@ const classMods = getClassMods('button', mods);
     data-open-modal={modal}
     {...props}
   >
-    {icon && !iconEnd && <Icon class="button__icon" name={icon} size={20} />}
+    {icon && !iconEnd && <UiIcon class="button__icon" name={icon} size={20} />}
     {text}
-    {icon && iconEnd && <Icon class="button__icon" name={icon} size={20} />}
+    {icon && iconEnd && <UiIcon class="button__icon" name={icon} size={20} />}
   </Tag>
 </Fragment>

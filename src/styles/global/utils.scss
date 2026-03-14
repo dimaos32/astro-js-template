@@ -1,5 +1,5 @@
-@use "./mixins";
+@use "./mixin";
 
 .visually-hidden {
-  @include mixins.visually-hidden;
+  @include mixin.visually-hidden;
 }

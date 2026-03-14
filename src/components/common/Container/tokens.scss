@@ -1,0 +1,25 @@
+@use "@styles/mixin";
+
+@mixin container-tokens {
+  --container-padding-inline: 40px;
+
+  @include mixin.bp(1024) {
+    --container-padding-inline: 32px;
+  }
+
+  @include mixin.bp(768) {
+    --container-padding-inline: 24px;
+  }
+
+  @include mixin.bp(576) {
+    --container-padding-inline: 20px;
+  }
+
+  @include mixin.bp(414) {
+    --container-padding-inline: 16px;
+  }
+
+  @include mixin.bp(375) {
+    --container-padding-inline: 10px;
+  }
+}

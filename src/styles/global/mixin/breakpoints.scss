@@ -1,0 +1,31 @@
+@use "sass:map";
+
+$breakpoints: (
+  1440: 1440px,
+  1200: 1200px,
+  1024: 1024px,
+  768: 768px,
+  576: 576px,
+  414: 414px,
+  375: 375px,
+);
+
+@mixin bp($breakpoint) {
+  $value: map.get($breakpoints, $breakpoint);
+
+  @if $value {
+    // Десктоп ферст
+    @media (max-width: $value - 1px) {
+      @content;
+    }
+
+    // Мобайл ферст
+    // @media (min-width: $value) {
+    //   @content;
+    // }
+  } @else {
+    $available: map.keys($breakpoints);
+
+    @error "[Шаблон]: Брейкпоинт '#{$breakpoint}' не существует. Доступные значения: #{$available}";
+  }
+}

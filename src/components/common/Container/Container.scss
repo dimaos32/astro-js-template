@@ -1,33 +1,8 @@
-@use "@styles/vars";
-@use "@styles/mixins";
-
-:root {
-  --container-padding-inline: #{vars.$container-pi};
-
-  @include mixins.vp-1023 {
-    --container-padding-inline: #{vars.$container-pi-1023};
-  }
-
-  @include mixins.vp-767 {
-    --container-padding-inline: #{vars.$container-pi-767};
-  }
-
-  @include mixins.vp-575 {
-    --container-padding-inline: #{vars.$container-pi-575};
-  }
-
-  @include mixins.vp-413 {
-    --container-padding-inline: #{vars.$container-pi-413};
-  }
-
-  @include mixins.vp-374 {
-    --container-padding-inline: #{vars.$container-pi-374};
-  }
-}
+@use "@styles/mixin";
 
 .container {
   inline-size: 100%;
-  max-inline-size: vars.$vp-max;
+  max-inline-size: 1440px;
   margin: 0 auto;
   padding-inline: var(--container-padding-inline);
 

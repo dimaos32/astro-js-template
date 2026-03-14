@@ -1,0 +1,9 @@
+@mixin tokens {
+  --color-white: #ffffff;
+  --color-black: #212121;
+  --color-lavender: #f8f5fc;
+  --color-fedora: #58485e;
+  --color-east-side: #b695c2;
+
+  --color-overlay: #{rgba(#212121, 0.7)};
+}

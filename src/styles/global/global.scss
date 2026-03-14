@@ -1,26 +1,8 @@
-@use "./mixins";
+@use "./tokens" as *;
+@use "./mixin";
 
 :root {
-  // colors
-  --color-white: #ffffff;
-  --color-black: #212121;
-  --color-lavender: #f8f5fc;
-  --color-fedora: #58485e;
-  --color-east-side: #b695c2;
-
-  --color-overlay: #{rgba(#212121, 0.7)};
-
-  --ff-primary: "Rubik", sans-serif;
-
-  --transition-default-time: 0.3s;
-  --transition-default-function: ease;
-  --transition-default: var(--transition-default-time)
-    var(--transition-default-function);
-
-  --transition-modal-time: 0.4s;
-  --transition-modal-function: cubic-bezier(0.55, 0, 0.1, 1);
-  --transition-modal: var(--transition-modal-time)
-    var(--transition-modal-function);
+  @include tokens;
 }
 
 *,
@@ -80,7 +62,7 @@ a {
 
   transition: color var(--transition-default);
 
-  @include mixins.hover-focus {
+  @include mixin.hover-focus {
     color: var(--color-east-side);
   }
 }

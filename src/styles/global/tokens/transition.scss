@@ -1,0 +1,11 @@
+@mixin tokens {
+  --transition-default-time: 0.3s;
+  --transition-default-function: ease;
+  --transition-default: var(--transition-default-time)
+    var(--transition-default-function);
+
+  --transition-modal-time: 0.6s;
+  --transition-modal-function: cubic-bezier(0.55, 0, 0.1, 1);
+  --transition-modal: var(--transition-modal-time)
+    var(--transition-modal-function);
+}

@@ -5,11 +5,9 @@
 // Globals
 // ---------------------------------------
 @use "./global/fonts";
-@use "./global/global";
 @use "./global/utils";
+@use "./global/global";
 
 // Components
 // ---------------------------------------
-@use "../ui/**/*";
-@use "../components/**/*";
-@use "../modules/**/*";
+@use "../components/**/!(tokens)";

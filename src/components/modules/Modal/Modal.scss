@@ -1,4 +1,4 @@
-@use "@styles/mixins";
+@use "@styles/mixin";
 
 .modal {
   position: fixed;
@@ -103,7 +103,7 @@
       transform: translate(-50%, -50%) rotate(135deg);
     }
 
-    @include mixins.hover-focus {
+    @include mixin.hover-focus {
       &::before,
       &::after {
         background-color: var(--color-east-side);

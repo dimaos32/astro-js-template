@@ -1,4 +1,4 @@
-@use "@styles/mixins";
+@use "@styles/mixin";
 
 .button {
   display: inline-flex;
@@ -21,7 +21,7 @@
     color var(--transition-default),
     background-color var(--transition-default);
 
-  @include mixins.hover-focus {
+  @include mixin.hover-focus {
     color: var(--color-east-side);
 
     border-color: var(--color-east-side);
@@ -46,7 +46,7 @@
       color: var(--color-white);
     }
 
-    @include mixins.hover-focus {
+    @include mixin.hover-focus {
       background-color: var(--color-east-side);
     }
   }

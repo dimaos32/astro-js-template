@@ -1,0 +1,13 @@
+@use "./color";
+@use "./typography";
+@use "./transition";
+
+@use "@components/Container/tokens" as *;
+
+@mixin tokens {
+  @include color.tokens;
+  @include typography.tokens;
+  @include transition.tokens;
+
+  @include container-tokens;
+}

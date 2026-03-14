@@ -1,0 +1,9 @@
+@mixin visually-hidden {
+  position: fixed;
+  transform: scale(0);
+}
+
+@mixin reset-visually-hidden {
+  position: unset;
+  transform: unset;
+}

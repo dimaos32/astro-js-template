@@ -1,8 +1,6 @@
 import { lockFocus, unlockFocus } from '@/helpers';
 import { modalSettings } from '@/settings';
-import scrollLock from 'scroll-lock';
-
-const { enablePageScroll, disablePageScroll } = scrollLock;
+import { disablePageScroll, enablePageScroll } from '@fluejs/noscroll';
 
 let currentSettings = {};
 let currentModalName = null;
@@ -145,7 +143,7 @@ function openModal(modalName, settings = {}) {
   };
 
   modal.classList.add('is-active');
-  disablePageScroll(modal);
+  disablePageScroll();
   currentSettings.openCallback?.();
 
   if (currentSettings.lockFocus) {
@@ -194,7 +192,7 @@ function openModal(modalName, settings = {}) {
   currentSettings.closeCallback?.();
 
   setTimeout(() => {
-    enablePageScroll(modal);
+    enablePageScroll();
   }, currentSettings.eventTimeout);
 
   currentModalName = null;

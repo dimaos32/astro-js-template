@@ -23,9 +23,9 @@
   "dependencies": {
     "-": "^0.0.1",
     "@csstools/normalize.css": "^12.1.1",
+    "@fluejs/noscroll": "^1.0.0",
     "astro": "^5.17.1",
-    "chalk": "^5.6.2",
-    "scroll-lock": "^2.1.5"
+    "chalk": "^5.6.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -31,9 +31,9 @@ export default defineConfig({
     resolve: {
       alias: {
         '@': '/src',
-        '@ui': '/src/components/ui',
         '@components': '/src/components/common',
         '@modules': '/src/components/modules',
+        '@ui': '/src/components/ui',
         '@styles': '/src/styles/global',
       },
     },

@@ -14,11 +14,11 @@
     "dev": "astro dev",
     "build": "npm run gen:sprite && npm run lint && astro build",
     "preview": "astro preview",
+    "gen:sprite": "node utils/generate-sprite.mjs",
     "lint:js": "eslint . --ext .js,.astro",
     "lint:css": "stylelint 'src/**/*.scss'",
     "lint": "npm run lint:js && npm run lint:css",
-    "proc:images": "node ./utils/images-optimize.mjs",
-    "gen:sprite": "node utils/generate-sprite.mjs"
+    "proc:images": "node ./utils/images-optimize.mjs"
   },
   "dependencies": {
     "-": "^0.0.1",

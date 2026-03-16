@@ -2,7 +2,7 @@
   "name": "astro-js-template",
   "type": "module",
   "description": "Шаблон для верстки на Astro с SCSS",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "browserslist": [
     "last 6 versions",
     "not dead",

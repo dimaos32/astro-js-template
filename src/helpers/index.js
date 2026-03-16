@@ -1,3 +1,3 @@
-export * from './_class-mods';
-export * from './_debounce';
-export * from './_focus-lock';
+export * from './class-mods';
+export * from './debounce';
+export * from './focus-lock';

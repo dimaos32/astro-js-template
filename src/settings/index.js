@@ -1,1 +1,1 @@
-export * from './_modal-settings';
+export * from './modal';

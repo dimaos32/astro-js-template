@@ -1,4 +1,4 @@
-export const PAGES = [
+export const SITE_PAGES = [
   // {
   //   name: 'UI-kit',
   //   href: 'ui-kit.html',

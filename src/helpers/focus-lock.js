@@ -1,3 +1,7 @@
+import { KeyCode } from '@/const/keyCode';
+
+const FOCUS_LOCK_DELAY_MS = 100; // ms
+
 let focusableElements = null;
 let focusedElement = null;
 
@@ -15,11 +19,6 @@ const selectors = [
   '[tabindex]:not([tabindex^="-"])',
 ];
 
-/**
- * Locks the focus within a specified element and its focusable children.
- * @param { HTMLElement } element - The element to lock the focus within.
- * @param { boolean } startFocus - Optional. Determines whether to focus the first focusable element within the locked element. Defaults to `true`.
- */
 function lockFocus(element, startFocus = true) {
   if (focusedElement !== null) {
     unlockFocus(false);
@@ -44,13 +43,9 @@ function lockFocus(element, startFocus = true) {
     }
 
     document.addEventListener('keydown', keydownHandler);
-  }, 100);
+  }, FOCUS_LOCK_DELAY_MS);
 }
 
-/**
- * Unlocks the focus and returns it to the previously focused element.
- * @param { boolean } returnFocus - Optional. Determines whether to return the focus to the previously focused element. Defaults to `true`.
- */
 function unlockFocus(returnFocus = true) {
   if (returnFocus && focusedElement) {
     focusedElement.focus();
@@ -62,7 +57,7 @@ function unlockFocus(returnFocus = true) {
 }
 
 function keydownHandler(event) {
-  const isTabPressed = event.key === 'Tab';
+  const isTabPressed = event.key === KeyCode.Tab;
 
   if (!isTabPressed) {
     return;

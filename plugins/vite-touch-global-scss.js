@@ -14,7 +14,6 @@ export function viteTouchGlobalScss(options = {}) {
   const normalizedWatchedPaths = watchedPaths.map((path) => normalize(path));
 
   const globalScssPath = normalize(
-    // eslint-disable-next-line no-undef
     process.cwd() + (options.globalScssPath || defaultGlobalScssPath)
   );
 

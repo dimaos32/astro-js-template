@@ -2,11 +2,7 @@ import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
 import { basename, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { optimize } from 'svgo';
-
-const gray = (text) => `\x1b[38;2;136;136;136m${text}\x1b[0m`;
-const green = (text) => `\x1b[38;2;0;255;0m${text}\x1b[0m`;
-const yellow = (text) => `\x1b[38;2;255;255;0m${text}\x1b[0m`;
-const red = (text) => `\x1b[38;2;255;0;0m${text}\x1b[0m`;
+import chalk from 'chalk';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const iconsDir = join(__dirname, '../src/raw/icons');
@@ -43,14 +39,13 @@ async function buildSprite() {
 
     if (svgFiles.length === 0) {
       // eslint-disable-next-line no-console
-      console.log(`${yellow('⚠')} No SVG files found in ${iconsDir}`);
+      console.log(`${chalk.yellow('!')} No SVG files found in ${iconsDir}`);
       return;
     }
 
+    const timestamp = chalk.gray(new Date().toLocaleTimeString());
     // eslint-disable-next-line no-console
-    console.log(
-      `${gray(new Date().toLocaleTimeString())} Found ${green(svgFiles.length)} SVG files`
-    );
+    console.log(`${timestamp} Found ${chalk.green(svgFiles.length)} SVG files`);
 
     let spriteContent =
       '<svg xmlns="http://www.w3.org/2000/svg" style="display: none">\n';
@@ -67,7 +62,7 @@ async function buildSprite() {
         if (result.error) {
           // eslint-disable-next-line no-console
           console.warn(
-            `${yellow('⚠')} Error optimizing ${file}: ${result.error}`
+            `${chalk.yellow('⚠')} Error optimizing ${file}: ${result.error}`
           );
           skipped++;
           continue;
@@ -87,7 +82,9 @@ async function buildSprite() {
         optimized++;
       } catch (err) {
         // eslint-disable-next-line no-console
-        console.warn(`${yellow('⚠')} Error processing ${file}: ${err.message}`);
+        console.warn(
+          `${chalk.yellow('!')} Error processing ${file}: ${err.message}`
+        );
         skipped++;
       }
     }
@@ -97,21 +94,21 @@ async function buildSprite() {
 
     const endTime = Date.now();
     const timeSpent = ((endTime - startTime) / 1000).toFixed(2);
+    const finalTimestamp = chalk.gray(new Date().toLocaleTimeString());
 
     // eslint-disable-next-line no-console
     console.log(
-      `${gray(new Date().toLocaleTimeString())} ${green('✓')} Sprite saved: ${green(optimized)} icons, ${yellow(skipped)} skipped, ${gray(timeSpent + 's')}`
+      `${finalTimestamp} ${chalk.green('✓')} Sprite saved: ${chalk.green(optimized)} icons, ${chalk.yellow(skipped)} skipped, ${chalk.gray(timeSpent + 's')}`
     );
 
     // eslint-disable-next-line no-console
     console.log(
-      `${gray(new Date().toLocaleTimeString())} 📍 Output: ${outputFile}`
+      `${finalTimestamp} ${chalk.cyan('▶')} Output: ${chalk.cyan(outputFile)}`
     );
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.error(`${red('✗')} Error: ${err.message}`);
-    // eslint-disable-next-line no-undef
-    process.exit(1);
+    console.error(`${chalk.red('❌')} Error: ${err.message}`);
+    throw err;
   }
 }
 

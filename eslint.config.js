@@ -13,7 +13,14 @@ export default [
     ],
   },
   { files: ['**/*.{js,mjs,cjs,astro}'] },
-  { languageOptions: { globals: globals.browser } },
+  {
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.browser,
+      },
+    },
+  },
   pluginJs.configs.recommended,
   ...eslintPluginAstro.configs.recommended,
   {

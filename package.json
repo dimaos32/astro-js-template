@@ -1,8 +1,21 @@
 {
   "name": "astro-js-template",
+  "version": "0.0.3",
   "type": "module",
-  "description": "Шаблон для верстки на Astro с SCSS",
-  "version": "0.0.2",
+  "description": "Современный шаблон для верстки на Astro с SCSS",
+  "author": "Dmitrii Osadchenko <osadchenko.d@gmail.com>",
+  "repository": "github:dimaos32/astro-js-template",
+  "homepage": "https://github.com/dimaos32/astro-js-template",
+  "bugs": "https://github.com/dimaos32/astro-js-template/issues",
+  "license": "MIT",
+  "keywords": [
+    "astro",
+    "template",
+    "scss",
+    "frontend",
+    "boilerplate",
+    "starter-kit"
+  ],
   "browserslist": [
     "last 6 versions",
     "not dead",

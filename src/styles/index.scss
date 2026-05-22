@@ -10,4 +10,7 @@
 
 // Components
 // ---------------------------------------
-@use "../components/**/!(tokens)";
+
+@use "../components/ui/**/!(tokens)";
+@use "../components/common/**/!(tokens)";
+@use "../components/modules/**/!(tokens)";

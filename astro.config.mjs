@@ -65,7 +65,6 @@ export default defineConfig({
       }),
       viteSvgSpriteWatcher({
         iconsPath: '/src/raw/icons/',
-        spriteScript: 'node utils/generate-sprite.mjs',
       }),
     ],
   },

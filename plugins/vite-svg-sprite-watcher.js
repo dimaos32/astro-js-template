@@ -1,6 +1,8 @@
 import { exec } from 'node:child_process';
 import { normalize } from 'node:path';
-import chalk from 'chalk';
+import { createLogger } from '../utils/logger.mjs';
+
+const logger = createLogger('sprite');
 
 export function viteSvgSpriteWatcher(options = {}) {
   const iconsPath = normalize(options.iconsPath || '/src/raw/icons/');
@@ -10,23 +12,15 @@ export function viteSvgSpriteWatcher(options = {}) {
 
   const runSpriteGeneration = () => {
     return new Promise((resolve, reject) => {
-      const timestamp = chalk.gray(new Date().toLocaleTimeString());
-
-      // eslint-disable-next-line no-console
-      console.log(`${timestamp} ${chalk.blue('🔨 Building sprite...')}`);
+      logger.info('🔨 Building sprite...');
 
       exec(spriteScript, (error) => {
         if (error) {
-          // eslint-disable-next-line no-console
-          console.error(
-            `${timestamp} ${chalk.red('❌ Error:')} ${error.message}`
-          );
+          logger.error(`❌ Error: ${error.message}`);
+
           reject(error);
         } else {
-          // eslint-disable-next-line no-console
-          console.log(
-            `${timestamp} ${chalk.green('✓ Sprite built successfully')}`
-          );
+          logger.success('✓ Sprite built successfully');
           resolve();
         }
       });
@@ -49,10 +43,8 @@ export function viteSvgSpriteWatcher(options = {}) {
     configureServer(server) {
       let isBuilding = false;
 
-      // eslint-disable-next-line no-console
-      console.log(chalk.yellow('🔍 Плагин svg-sprite-watcher активирован'));
-      // eslint-disable-next-line no-console
-      console.log(chalk.yellow(`   Слежу за: ${iconsPath}`));
+      logger.info('🔍 Плагин svg-sprite-watcher активирован');
+      logger.info(`   Слежу за: ${iconsPath}`);
 
       const rebuildSprite = (filePath) => {
         if (
@@ -65,25 +57,14 @@ export function viteSvgSpriteWatcher(options = {}) {
         if (isBuilding) return;
         isBuilding = true;
 
-        const timestamp = chalk.gray(new Date().toLocaleTimeString());
-
-        // eslint-disable-next-line no-console
-        console.log(
-          `${timestamp} ${chalk.blue('🔄 SVG changed, rebuilding sprite...')}`
-        );
+        logger.info('🔄 SVG changed, rebuilding sprite...');
 
         exec(spriteScript, (error) => {
           isBuilding = false;
           if (error) {
-            // eslint-disable-next-line no-console
-            console.error(
-              `${timestamp} ${chalk.red('❌ Error:')} ${error.message}`
-            );
+            logger.error(`❌ Error: ${error.message}`);
           } else {
-            // eslint-disable-next-line no-console
-            console.log(
-              `${timestamp} ${chalk.green('✓ Sprite updated successfully')}`
-            );
+            logger.success('✓ Sprite updated successfully');
           }
         });
       };

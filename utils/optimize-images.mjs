@@ -1,8 +1,8 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { styleText } from 'node:util';
 import sharp from 'sharp';
 import { glob } from 'glob';
-import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { optimize } from 'svgo';
 
@@ -85,7 +85,7 @@ const optimizeRaster = async (imagePath, imageMetadata, transformOptions) => {
 
   await sharpInstance.toFile(`${RASTER_OUT_PATH}/${fileName}`);
   // eslint-disable-next-line no-console
-  console.log(chalk.greenBright(`✓ ${fileName}`));
+  console.log(styleText('greenBright', `✓ ${fileName}`));
   sharpInstance.destroy();
 };
 
@@ -103,10 +103,10 @@ const optimizeSvg = async (svgPath) => {
 
     await fs.writeFile(`${SVG_OUT_PATH}/${fileName}`, result.data);
     // eslint-disable-next-line no-console
-    console.log(chalk.greenBright(`✓ ${fileName}`));
+    console.log(styleText('greenBright', `✓ ${fileName}`));
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.error(chalk.redBright(`✗ ${fileName}: ${err.message}`));
+    console.log(styleText('redBright', `✗ ${fileName}: ${err.message}`));
     throw err;
   }
 };
@@ -180,15 +180,14 @@ const main = async () => {
       {
         name: 'clear',
         type: 'confirm',
-        message: chalk.blueBright(
-          `Очистить директории ${chalk.whiteBright(RASTER_OUT_PATH)} и ${chalk.whiteBright(SVG_OUT_PATH)}?`
-        ),
+        message: `${styleText('blue', 'Очистить директории')} ${styleText('whiteBright', RASTER_OUT_PATH)} ${styleText('blue', 'и')} ${styleText('whiteBright', SVG_OUT_PATH)}${styleText('blue', '?')}`,
         default: false,
       },
       {
         name: 'retina',
         type: 'confirm',
-        message: chalk.blueBright(
+        message: styleText(
+          'blueBright',
           'Использовать ретинизацию для растровых изображений?'
         ),
         default: true,
@@ -196,13 +195,13 @@ const main = async () => {
       {
         name: 'webp',
         type: 'confirm',
-        message: chalk.blueBright('Использовать WebP?'),
+        message: styleText('blueBright', 'Использовать WebP?'),
         default: true,
       },
       {
         name: 'quality',
         type: 'number',
-        message: chalk.blueBright('Качество растровых изображений:'),
+        message: styleText('blueBright', 'Качество растровых изображений:'),
         default: QUALITY,
       },
     ]);
@@ -213,24 +212,27 @@ const main = async () => {
       await clearDirectory(RASTER_OUT_PATH, PROTECTED_RASTER_FILES);
       await clearDirectory(SVG_OUT_PATH, PROTECTED_SVG_FILES);
 
-      const protectedInfo = [];
+      const protectedFiles = [];
+
       if (PROTECTED_SVG_FILES.length) {
-        protectedInfo.push(
-          `${chalk.whiteBright(PROTECTED_SVG_FILES.join(', '))} в SVG`
-        );
+        protectedFiles.push(...PROTECTED_SVG_FILES);
       }
       if (PROTECTED_RASTER_FILES.length) {
-        protectedInfo.push(
-          `${chalk.whiteBright(PROTECTED_RASTER_FILES.join(', '))} в изображениях`
-        );
+        protectedFiles.push(...PROTECTED_RASTER_FILES);
       }
 
-      // eslint-disable-next-line no-console
-      console.log(
-        chalk.blueBright(
-          `✓ Директории очищены${protectedInfo.length ? ` (сохранены: ${protectedInfo.join(', ')})` : ''}`
-        )
-      );
+      if (protectedFiles.length) {
+        // eslint-disable-next-line no-console
+        console.log(
+          styleText(
+            'greenBright',
+            `✓ Директории очищены, кроме файлов: ${protectedFiles.map((f) => styleText('whiteBright', f)).join(', ')}`
+          )
+        );
+      } else {
+        // eslint-disable-next-line no-console
+        console.log(styleText('greenBright', '✓ Директории очищены'));
+      }
     }
 
     const svgFiles = glob.sync([`${RASTER_PATH}/**/*.svg`]);
@@ -238,7 +240,9 @@ const main = async () => {
     if (svgFiles.length > 0) {
       await fs.mkdir(SVG_OUT_PATH, { recursive: true });
       // eslint-disable-next-line no-console
-      console.log(chalk.blueBright(`▶ Оптимизируем ${svgFiles.length} SVG...`));
+      console.log(
+        styleText('blueBright', `▶ Оптимизируем ${svgFiles.length} SVG...`)
+      );
 
       let svgSuccess = 0;
       let svgFailed = 0;
@@ -256,19 +260,20 @@ const main = async () => {
       if (svgFailed > 0) {
         // eslint-disable-next-line no-console
         console.log(
-          chalk.redBright(
-            `✗ SVG: ${chalk.whiteBright(svgSuccess)} OK, ${chalk.whiteBright(svgFailed)} ошибок`
+          styleText(
+            'redBright',
+            `✗ SVG: ${styleText('whiteBright', svgSuccess)} OK, ${styleText('whiteBright', svgFailed)} ошибок`
           )
         );
       } else {
         // eslint-disable-next-line no-console
         console.log(
-          chalk.greenBright(`✓ Все ${svgSuccess} SVG оптимизированы`)
+          styleText('greenBright', `✓ Все ${svgSuccess} SVG оптимизированы`)
         );
       }
     } else {
       // eslint-disable-next-line no-console
-      console.log(chalk.yellowBright(`⚠ Нет SVG в ${RASTER_PATH}`));
+      console.log(styleText('yellowBright', `⚠ Нет SVG в ${RASTER_PATH}`));
     }
 
     // Оптимизация растровых изображений
@@ -281,7 +286,10 @@ const main = async () => {
     if (rasterFiles.length === 0) {
       // eslint-disable-next-line no-console
       console.log(
-        chalk.yellowBright(`⚠ Нет растровых изображений в ${RASTER_PATH}`)
+        styleText(
+          'yellowBright',
+          `⚠ Нет растровых изображений в ${RASTER_PATH}`
+        )
       );
       return;
     }
@@ -289,7 +297,8 @@ const main = async () => {
     await fs.mkdir(RASTER_OUT_PATH, { recursive: true });
     // eslint-disable-next-line no-console
     console.log(
-      chalk.yellowBright(
+      styleText(
+        'yellowBright',
         `▶ Оптимизируем ${rasterFiles.length} растровых изображений...`
       )
     );
@@ -305,7 +314,7 @@ const main = async () => {
         rasterFailed++;
         // eslint-disable-next-line no-console
         console.error(
-          chalk.redBright(`✗ ${path.basename(img)}: ${err.message}`)
+          styleText('redBright', `✗ ${path.basename(img)}: ${err.message}`)
         );
       }
     }
@@ -313,8 +322,9 @@ const main = async () => {
     if (rasterFailed > 0) {
       // eslint-disable-next-line no-console
       console.log(
-        chalk.redBright(
-          `✗ Растры: ${chalk.whiteBright(rasterSuccess)} OK, ${chalk.whiteBright(rasterFailed)} ошибок`
+        styleText(
+          'redBright',
+          `✗ Растры: ${styleText('whiteBright', rasterSuccess)} OK, ${styleText('whiteBright', rasterFailed)} ошибок`
         )
       );
 
@@ -323,13 +333,14 @@ const main = async () => {
 
     // eslint-disable-next-line no-console
     console.log(
-      chalk.greenBright(
+      styleText(
+        'greenBright',
         `✓ Все ${rasterSuccess} растровых изображений оптимизированы`
       )
     );
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.error(chalk.redBright(`✗ Ошибка: ${err.message}`));
+    console.error(styleText('redBright', `✗ Ошибка: ${err.message}`));
 
     process.exit(1);
   }

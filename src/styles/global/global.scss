@@ -26,6 +26,8 @@ html {
   line-height: 1.5;
   color: var(--color-txt-primary);
 
+  background-color: var(--color-bg-primary);
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
@@ -34,7 +36,7 @@ html {
 
 body {
   inline-size: 100%;
-  min-inline-size: 320px;
+  min-inline-size: 360px;
   block-size: 100%;
 
   display: flex;

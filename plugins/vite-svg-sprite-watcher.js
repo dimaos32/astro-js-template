@@ -1,36 +1,122 @@
-import { exec } from 'node:child_process';
-import { normalize } from 'node:path';
-import chalk from 'chalk';
+import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
+import { basename, join, normalize } from 'node:path';
+import { optimize } from 'svgo';
+import { createLogger } from '../utils/logger.mjs';
+
+const svgoConfig = {
+  plugins: [
+    'preset-default',
+    'removeDimensions',
+    'removeTitle',
+    'removeDesc',
+    'removeComments',
+    'removeEmptyAttrs',
+    'removeEmptyContainers',
+    'cleanupIds',
+    {
+      name: 'addAttributesToSVGElement',
+      params: {
+        attributes: [{ focusable: 'false' }],
+      },
+    },
+  ],
+};
+
+async function buildSprite(iconsPath, outputDir, outputFile, logger) {
+  const startTime = Date.now();
+
+  try {
+    await mkdir(outputDir, { recursive: true });
+
+    const files = await readdir(iconsPath);
+    const svgFiles = files.filter((file) => file.endsWith('.svg'));
+
+    if (svgFiles.length === 0) {
+      logger.warn(`No SVG files found in ${iconsPath}`);
+      return;
+    }
+
+    let spriteContent =
+      '<svg xmlns="http://www.w3.org/2000/svg" style="display: none">\n';
+    let optimized = 0;
+    let skipped = 0;
+    const errors = [];
+
+    for (const file of svgFiles) {
+      try {
+        const iconName = basename(file, '.svg');
+        let content = await readFile(join(iconsPath, file), 'utf8');
+
+        const result = optimize(content, svgoConfig);
+
+        if (result.error) {
+          errors.push(`${file}: ${result.error}`);
+          skipped++;
+          continue;
+        }
+
+        const viewBoxMatch = result.data.match(/viewBox=["']([^"']+)["']/);
+
+        let symbolContent = result.data
+          .replace(/<\?xml.*?\?>/, '')
+          .replace(/<!DOCTYPE.*?>/, '')
+          .replace(/<svg[^>]*>/, '')
+          .replace(/<\/svg>/, '')
+          .replace(/\n\s*/g, ' ')
+          .trim();
+
+        spriteContent += `  <symbol id="${iconName}"${viewBoxMatch ? ` viewBox="${viewBoxMatch[1]}"` : ''}>${symbolContent}</symbol>\n`;
+        optimized++;
+      } catch (err) {
+        errors.push(`${file}: ${err.message}`);
+        skipped++;
+      }
+    }
+
+    spriteContent += '</svg>';
+    await writeFile(outputFile, spriteContent);
+
+    const endTime = Date.now();
+    const timeSpent = endTime - startTime;
+
+    if (optimized === svgFiles.length && skipped === 0) {
+      logger.success(`Rebuilt ${timeSpent}ms`);
+    } else {
+      logger.warn(`Rebuilt ${optimized} ok, ${skipped} failed ${timeSpent}ms`);
+      errors.forEach((err) => logger.error(`  ${err}`));
+    }
+  } catch (err) {
+    logger.error(`Failed: ${err.message}`);
+  }
+}
 
 export function viteSvgSpriteWatcher(options = {}) {
-  const iconsPath = normalize(options.iconsPath || '/src/raw/icons/');
-  const spriteScript = options.spriteScript || 'node utils/generate-sprite.mjs';
+  const iconsPath = options.iconsPath || '/src/raw/icons/';
+  const fullIconsPath = normalize(join(process.cwd(), iconsPath));
+  const outputDir = options.outputDir || join(process.cwd(), 'public/svg');
+  const outputFile = options.outputFile || join(outputDir, 'sprite.svg');
 
-  let hasGeneratedForBuild = false;
+  const logger = createLogger('sprite');
+  let debounceTimer = null;
+  let serverInstance = null;
 
-  const runSpriteGeneration = () => {
-    return new Promise((resolve, reject) => {
-      const timestamp = chalk.gray(new Date().toLocaleTimeString());
+  const runSpriteGeneration = async () => {
+    await buildSprite(fullIconsPath, outputDir, outputFile, logger);
 
-      // eslint-disable-next-line no-console
-      console.log(`${timestamp} ${chalk.blue('🔨 Building sprite...')}`);
+    if (serverInstance) {
+      serverInstance.ws.send({ type: 'full-reload' });
+    }
+  };
 
-      exec(spriteScript, (error) => {
-        if (error) {
-          // eslint-disable-next-line no-console
-          console.error(
-            `${timestamp} ${chalk.red('❌ Error:')} ${error.message}`
-          );
-          reject(error);
-        } else {
-          // eslint-disable-next-line no-console
-          console.log(
-            `${timestamp} ${chalk.green('✓ Sprite built successfully')}`
-          );
-          resolve();
-        }
-      });
-    });
+  const debouncedRegenerate = () => {
+    if (debounceTimer) {
+      clearTimeout(debounceTimer);
+    }
+
+    debounceTimer = setTimeout(() => {
+      debounceTimer = null;
+      runSpriteGeneration();
+    }, 150);
   };
 
   return {
@@ -38,64 +124,29 @@ export function viteSvgSpriteWatcher(options = {}) {
     enforce: 'pre',
 
     buildStart() {
-      if (!hasGeneratedForBuild) {
-        hasGeneratedForBuild = true;
-        return runSpriteGeneration();
-      }
-
-      return Promise.resolve();
+      return runSpriteGeneration();
     },
 
     configureServer(server) {
-      let isBuilding = false;
-
-      // eslint-disable-next-line no-console
-      console.log(chalk.yellow('🔍 Плагин svg-sprite-watcher активирован'));
-      // eslint-disable-next-line no-console
-      console.log(chalk.yellow(`   Слежу за: ${iconsPath}`));
-
-      const rebuildSprite = (filePath) => {
-        if (
-          !normalize(filePath).includes(iconsPath) ||
-          !filePath.endsWith('.svg')
-        ) {
-          return;
-        }
-
-        if (isBuilding) return;
-        isBuilding = true;
-
-        const timestamp = chalk.gray(new Date().toLocaleTimeString());
-
-        // eslint-disable-next-line no-console
-        console.log(
-          `${timestamp} ${chalk.blue('🔄 SVG changed, rebuilding sprite...')}`
-        );
-
-        exec(spriteScript, (error) => {
-          isBuilding = false;
-          if (error) {
-            // eslint-disable-next-line no-console
-            console.error(
-              `${timestamp} ${chalk.red('❌ Error:')} ${error.message}`
-            );
-          } else {
-            // eslint-disable-next-line no-console
-            console.log(
-              `${timestamp} ${chalk.green('✓ Sprite updated successfully')}`
-            );
-          }
-        });
-      };
-
-      server.httpServer?.once('listening', () => {
-        runSpriteGeneration();
-      });
+      serverInstance = server;
+      logger.info(`Watching ${iconsPath}`);
 
       server.watcher
-        .on('add', rebuildSprite)
-        .on('change', rebuildSprite)
-        .on('unlink', rebuildSprite);
+        .on('add', (filePath) => {
+          if (!filePath.includes(fullIconsPath) || !filePath.endsWith('.svg'))
+            return;
+          debouncedRegenerate();
+        })
+        .on('change', (filePath) => {
+          if (!filePath.includes(fullIconsPath) || !filePath.endsWith('.svg'))
+            return;
+          debouncedRegenerate();
+        })
+        .on('unlink', (filePath) => {
+          if (!filePath.includes(fullIconsPath) || !filePath.endsWith('.svg'))
+            return;
+          debouncedRegenerate();
+        });
     },
   };
 }

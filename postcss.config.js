@@ -16,7 +16,6 @@ export default {
     postcssPxToRem({
       rootValue: 16,
       propList: ['*'],
-      selectorBlackList: ['.visually-hidden'],
       mediaQuery: true,
     }),
   ],

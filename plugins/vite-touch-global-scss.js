@@ -1,9 +1,9 @@
-import { normalize } from 'node:path';
+import { normalize, join } from 'node:path';
 import fs from 'node:fs';
 
 export function viteTouchGlobalScss(options = {}) {
-  const defaultWatchedPaths = ['/src/components/'];
-  const defaultGlobalScssPath = '/src/styles/index.scss';
+  const defaultWatchedPaths = ['src/components/'];
+  const defaultGlobalScssPath = 'src/styles/index.scss';
 
   let watchedPaths = options.watchedPaths || defaultWatchedPaths;
 
@@ -11,10 +11,12 @@ export function viteTouchGlobalScss(options = {}) {
     watchedPaths = [watchedPaths];
   }
 
-  const normalizedWatchedPaths = watchedPaths.map((path) => normalize(path));
+  const normalizedWatchedPaths = watchedPaths.map((path) =>
+    normalize(join(process.cwd(), path))
+  );
 
   const globalScssPath = normalize(
-    process.cwd() + (options.globalScssPath || defaultGlobalScssPath)
+    join(process.cwd(), options.globalScssPath || defaultGlobalScssPath)
   );
 
   return {
@@ -36,6 +38,7 @@ export function viteTouchGlobalScss(options = {}) {
       };
 
       server.watcher.on('add', touchGlobalScss);
+      server.watcher.on('change', touchGlobalScss);
     },
   };
 }

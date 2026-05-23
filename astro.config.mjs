@@ -60,12 +60,11 @@ export default defineConfig({
     plugins: [
       viteSassGlob(),
       viteTouchGlobalScss({
-        watchedPaths: ['/src/ui/', '/src/components/', '/src/modules/'],
+        watchedPaths: '/src/components/',
         globalScssPath: '/src/styles/index.scss',
       }),
       viteSvgSpriteWatcher({
         iconsPath: '/src/raw/icons/',
-        spriteScript: 'node utils/generate-sprite.mjs',
       }),
     ],
   },
